@@ -54,6 +54,15 @@ void ht16k33_display_char(uint8_t index, char character)
     i2c_write_blocking(i2c, ht_address, buffer, 3, false);
 }
 
+void ht16k33_turn_off_display(uint8_t index)
+{
+    uint8_t buffer[3];
+    buffer[0] = index * 2;
+    buffer[1] = 0;
+    buffer[2] = 0;
+    i2c_write_blocking(i2c, ht_address, buffer, 3, false);
+}
+
 void ht16k33_set_brightness(uint8_t brightness)
 {
     write_byte(HT16K33_BRIGHTNESS | (brightness <= 15 ? brightness : HT16K33_MAX_BRIGHTNESS));

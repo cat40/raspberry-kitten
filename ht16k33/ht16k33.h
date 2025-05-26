@@ -14,6 +14,7 @@ void set_ht16k33_i2c(i2c_inst_t* i2c_inst);
 void set_ht16k33_address(uint8_t address);
 void set_ht16k33_num_digits(uint8_t digits);
 void ht16k33_display_char(uint8_t index, char character);
+void ht16k33_turn_off_display(uint8_t index);
 void ht16k33_set_brightness(uint8_t brightness);
 
 #endif
