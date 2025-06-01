@@ -20,6 +20,7 @@ static uint8_t num_digits = HT16K33_DEFAULT_NUM_DIGITS;
 
 static uint16_t char_to_binary(char character);
 static void write_byte(uint8_t byte);
+static inline uint8_t translate_index(uint8_t index) { return 3-index; }
 
 void init_ht16k33(void)
 {
@@ -30,6 +31,7 @@ void init_ht16k33(void)
 
 void ht16k33_display_number_2_digit(uint8_t start_index, uint8_t number)
 {
+    // start_index = translate_index(start_index);
     char left, right;
     if (number > 99)
     {
@@ -63,6 +65,7 @@ void set_ht16k33_num_digits(uint8_t digits)
 
 void ht16k33_display_char(uint8_t index, char character)
 {
+    index = translate_index(index);
     uint8_t buffer[3];
     uint16_t binary = char_to_binary(character);
     buffer[0] = index * 2;
@@ -80,7 +83,7 @@ void ht16k33_turn_off_display(uint8_t index)
     i2c_write_blocking(i2c, ht_address, buffer, 3, false);
 }
 
-void ht16k33_set_brightness(uint8_t brightness)
+void ht16k33_set_brightness(uint8_t brightness)  // todo see if this can be implimented per-display
 {
     write_byte(HT16K33_BRIGHTNESS | (brightness <= 15 ? brightness : HT16K33_MAX_BRIGHTNESS));
 }
