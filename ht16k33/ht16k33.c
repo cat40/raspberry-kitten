@@ -28,6 +28,23 @@ void init_ht16k33(void)
     write_byte(HT16K33_DISPLAY_SETUP | HT16K33_DISPLAY_ON);
 }
 
+void ht16k33_display_number_2_digit(uint8_t start_index, uint8_t number)
+{
+    char left, right;
+    if (number > 99)
+    {
+        left = 'X';
+        right = 'X';
+    }
+    else
+    {
+        left = (number / 10) + '0';
+        right = (number % 10) + '0';
+    }
+    ht16k33_display_char(start_index, left);
+    ht16k33_display_char(start_index-1, right);
+}
+
 void set_ht16k33_address(uint8_t address)
 {
     ht_address = address;

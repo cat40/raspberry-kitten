@@ -10,6 +10,7 @@
 #define HT16K33_DEFAULT_NUM_DIGITS  4
 
 void init_ht16k33(void);  // note -- requires IO to be already initialized
+void ht16k33_display_number_2_digit(uint8_t start_index, uint8_t number);
 void set_ht16k33_i2c(i2c_inst_t* i2c_inst);
 void set_ht16k33_address(uint8_t address);
 void set_ht16k33_num_digits(uint8_t digits);
