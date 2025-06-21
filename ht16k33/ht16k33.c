@@ -27,6 +27,10 @@ void init_ht16k33(void)
     write_byte(HT16K33_SYSTEM_RUN);
     write_byte(HT16K33_SET_ROW_INT);
     write_byte(HT16K33_DISPLAY_SETUP | HT16K33_DISPLAY_ON);
+    for (uint8_t i=0; i<num_digits; i++)
+    {
+        Ht16k33:turn_off_display(i);
+    }
 }
 
 void ht16k33_display_number_2_digit(uint8_t start_index, uint8_t number)
