@@ -1,12 +1,11 @@
-#include "ht16k33.h"
+#include "ht16k33.hpp"
+
+extern "C"
+{
+#include "hardware/i2c.h"
+}
 
 #include <stdint.h>
-
-#include "hardware/i2c.h"
-
-static i2c_inst_t* i2c = i2c_default;
-static uint8_t ht_address = HT16K33_DEFAULT_ADDRESS;
-static uint8_t num_digits = HT16K33_DEFAULT_NUM_DIGITS;
 
 // these defines copied from pico-examples, which presumably got them from the datasheet
 #define HT16K33_SYSTEM_RUN      0x21
@@ -18,11 +17,14 @@ static uint8_t num_digits = HT16K33_DEFAULT_NUM_DIGITS;
 
 #define HT16K33_MAX_BRIGHTNESS  15
 
-static uint16_t char_to_binary(char character);
-static void write_byte(uint8_t byte);
-static inline uint8_t translate_index(uint8_t index) { return 3-index; }
+Ht16k33::Ht16k33(uint8_t i2c_address, i2c_inst_t* i2c_instance, uint8_t num_digits)
+{
+    this->i2c_address = i2c_address;
+    this->i2c_instance = i2c_instance;
+    this->num_digits = num_digits;
+}
 
-void init_ht16k33(void)
+void Ht16k33::init(void)
 {
     write_byte(HT16K33_SYSTEM_RUN);
     write_byte(HT16K33_SET_ROW_INT);
@@ -33,7 +35,7 @@ void init_ht16k33(void)
     }
 }
 
-void ht16k33_display_number_2_digit(uint8_t start_index, uint8_t number)
+void Ht16k33::display_number_2_digit(uint8_t start_index, uint8_t number)
 {
     // start_index = translate_index(start_index);
     char left, right;
@@ -47,57 +49,50 @@ void ht16k33_display_number_2_digit(uint8_t start_index, uint8_t number)
         left = (number / 10) + '0';
         right = (number % 10) + '0';
     }
-    ht16k33_display_char(start_index, left);
-    ht16k33_display_char(start_index-1, right);
+    display_char(start_index, left);
+    display_char(start_index-1, right);
 }
 
-void set_ht16k33_address(uint8_t address)
+void Ht16k33::display_char(uint8_t index, char character)
 {
-    ht_address = address;
+    display_char(index, character, false);
 }
 
-void set_ht16k33_i2c(i2c_inst_t* i2c_inst)
-{
-    i2c = i2c_inst;
-}
-
-void set_ht16k33_num_digits(uint8_t digits)
-{
-    num_digits = digits;
-}
-
-
-void ht16k33_display_char(uint8_t index, char character)
+void Ht16k33::display_char(uint8_t index, char character, bool decimal_point)
 {
     index = translate_index(index);
     uint8_t buffer[3];
     uint16_t binary = char_to_binary(character);
+    if (decimal_point)
+    {
+        character |= (1<<14);
+    }
     buffer[0] = index * 2;
     buffer[1] = binary & 0xff;
     buffer[2] = binary >> 8;
-    i2c_write_blocking(i2c, ht_address, buffer, 3, false);
+    i2c_write_blocking(i2c_instance, i2c_address, buffer, 3, false);
 }
 
-void ht16k33_turn_off_display(uint8_t index)
+void Ht16k33::turn_off_display(uint8_t index)
 {
     uint8_t buffer[3];
     buffer[0] = index * 2;
     buffer[1] = 0;
     buffer[2] = 0;
-    i2c_write_blocking(i2c, ht_address, buffer, 3, false);
+    i2c_write_blocking(i2c_instance, i2c_address, buffer, 3, false);
 }
 
-void ht16k33_set_brightness(uint8_t brightness)  // todo see if this can be implimented per-display
+void Ht16k33::set_brightness(uint8_t brightness)  // todo see if this can be implimented per-display
 {
     write_byte(HT16K33_BRIGHTNESS | (brightness <= 15 ? brightness : HT16K33_MAX_BRIGHTNESS));
 }
 
-static void write_byte(uint8_t byte)
+void Ht16k33::write_byte(uint8_t byte)
 {
-    i2c_write_blocking(i2c, ht_address, &byte, 1, false);
+    i2c_write_blocking(i2c_instance, i2c_address, &byte, 1, false);
 }
 
-static uint16_t char_to_binary(char character)
+uint16_t Ht16k33::char_to_binary(char character)
 {
     // maps from pico-examples; apparantly they are standardish
     const static uint16_t capital_letters[] = {
