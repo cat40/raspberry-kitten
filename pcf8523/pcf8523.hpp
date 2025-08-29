@@ -13,7 +13,7 @@ class Pcf8523
 {
     public:
         Pcf8523(uint8_t i2c_address, i2c_inst_t* i2c_instance);
-        void init(void);
+        void init(bool use_backup_battery);
         void get_reading(rtc_reading* reading);
         void set_time(rtc_reading* reading);
         void init_interrupt_pin(uint interrupt_pin, gpio_irq_callback_t callback);
@@ -21,6 +21,8 @@ class Pcf8523
         static inline uint8_t bcd_to_decimal(uint8_t bcd, uint8_t tens_mask) { return 10*((bcd >> 4) & tens_mask) + (bcd & 0x0f); }
         static inline uint8_t decimal_to_bcd(uint8_t decimal, uint8_t tens_mask) { return (((decimal/10)&tens_mask) << 4) | ((decimal % 10)&0x0f); }
         uint interrupt_pin;
+        i2c_inst_t* i2c;
+        uint8_t i2c_address;
 
 };
 
