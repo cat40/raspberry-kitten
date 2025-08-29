@@ -1,11 +1,11 @@
-add_library(kitten-pcf8523 INTERFACE)
+add_library(kitten-led INTERFACE)
 
 target_sources(kitten-led INTERFACE
-    pcf8523.cpp
+    led.cpp
 )
 
 target_link_libraries(kitten-led INTERFACE
-    hardware_i2c
+    hardware_pwm
 )
 
 
