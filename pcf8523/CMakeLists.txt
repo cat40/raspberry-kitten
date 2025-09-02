@@ -1,12 +1,12 @@
-add_library(kitten-led INTERFACE)
+add_library(kitten-pcf8523 INTERFACE)
 
-target_sources(kitten-led INTERFACE
-    led.cpp
+target_sources(kitten-pcf8523 INTERFACE
+    pcf8523.cpp
 )
 
-target_link_libraries(kitten-led INTERFACE
-    hardware_pwm
+target_link_libraries(kitten-pcf8523 INTERFACE
+    hardware_i2c
 )
 
 
-target_include_directories(kitten-led INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(kitten-pcf8523 INTERFACE ${CMAKE_CURRENT_LIST_DIR})
