@@ -16,6 +16,6 @@ class Eeprom
         i2c_inst_t* i2c;
         uint8_t i2c_address;
         static void address_to_array(uint16_t address, uint8_t* array);
-}
+};
 
 #endif

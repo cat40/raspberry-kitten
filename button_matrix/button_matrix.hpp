@@ -16,7 +16,7 @@ class ButtonMatrix
         ButtonMatrix(const uint* rows, const uint* columns, const uint8_t num_rows, const uint8_t num_columns, uint32_t min_polling_interval);
         void init(void);
         // returns the key pressed, 0 if no keys pressed, and -1 if multiple keys pressed
-        int8_t scan_button_matrix(void);  // note: this needs to be debounced. Limiting the polling rate is probably sufficent
+        int32_t scan_button_matrix(void);  // note: this needs to be debounced. Limiting the polling rate is probably sufficent
         const uint *rows, *columns;
         const uint8_t num_rows, num_columns;
         const char* keymap;

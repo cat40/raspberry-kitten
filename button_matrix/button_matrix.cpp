@@ -90,12 +90,6 @@ int32_t ButtonMatrix::scan_button_matrix(void)
     return key;
 }
 
-char ButtonMatrix::key_from_keymap(uint8_t row, uint8_t column)
-{
-    uint8_t index = num_columns*row + column;
-    return keymap[index];
-}
-
 void ButtonMatrix::set_rows(bool value)
 {
     for(int8_t i=0; i<num_rows; i++)

@@ -18,18 +18,25 @@ void Eeprom::write_data(uint16_t address, uint8_t* data, uint32_t length)
 {
     uint8_t address_array[2];
     address_to_array(address, address_array);
-    i2c_write_blocking(i2c, i2c_address, &address_array, 2, true);
+    i2c_write_blocking(i2c, i2c_address, address_array, 2, true);
     i2c_write_blocking(i2c, i2c_address, data, length, false);
 }
 
-uint8_t read_byte(uint16_t address)
+uint8_t Eeprom::read_byte(uint16_t address)
 {
-
+    uint8_t address_array[2], byte;
+    address_to_array(address, address_array);
+    i2c_write_blocking(i2c, i2c_address, address_array, 2, true);
+    i2c_read_blocking(i2c, i2c_address, &byte, 1, false);
+    return byte;
 }
 
-void read_data(uint16_t address, uint8_t* data, uint32_t length)
+void Eeprom::read_data(uint16_t address, uint8_t* data, uint32_t length)
 {
-
+    uint8_t address_array[2];
+    address_to_array(address, address_array);
+    i2c_write_blocking(i2c, i2c_address, address_array, 2, true);
+    i2c_read_blocking(i2c, i2c_address, data, length, false);
 }
 
 static void address_to_array(uint16_t address, uint8_t* array)

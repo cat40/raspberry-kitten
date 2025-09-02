@@ -9,4 +9,4 @@ target_link_libraries(kitten-matrix INTERFACE
 )
 
 
-target_include_directories(kitten-utilities INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(kitten-matrix INTERFACE ${CMAKE_CURRENT_LIST_DIR})
