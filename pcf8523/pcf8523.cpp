@@ -30,7 +30,7 @@ extern "C"
 // battery switchover enabled, standard mode
 #define PCF_BATTERY_ENABLED     0x00
 
-Pcf8523::Pcf8523(uint8_t i2c_address, i2c_inst_t* i2c_instance)
+Pcf8523::Pcf8523(i2c_inst_t* i2c_instance)
 {
     this->i2c_address = i2c_address;
     this->i2c = i2c_instance;
@@ -49,7 +49,7 @@ void Pcf8523::init(bool use_backup_battery)
     }
 }
 
-void Pcf8523::get_reading(rtc_reading* reading)
+void Pcf8523::get_reading(rtc_reading_t* reading)
 {
    const static uint8_t register_address = PCF_READING_REGISTER;
     uint8_t buffer[7];
@@ -67,7 +67,7 @@ void Pcf8523::get_reading(rtc_reading* reading)
     // printf("register readings: %02u %02u %02u %02u %02u %02u %02u\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
 }
 
-void Pcf8523::set_time(rtc_reading* reading)
+void Pcf8523::set_time(rtc_reading_t* reading)
 {
     // const static uint8_t register_address = PCF_READING_REGISTER;
     uint8_t buffer[8];
@@ -81,7 +81,7 @@ void Pcf8523::set_time(rtc_reading* reading)
     buffer[7] = decimal_to_bcd(reading->year, YEARS_TENS_MASK);
     // i2c_write_blocking(i2c, i2c_address, &register_address, 1, true);
     i2c_write_blocking(i2c, i2c_address, buffer, 8, true);
-    // rtc_reading new_reading;
+    // rtc_reading_t new_reading;
     // get_reading_pcf8523(&new_reading);
     // printf("New date reading is: ");
     // printf(DATE_FORMAT_STRING, new_reading.year, new_reading.month, new_reading.day, new_reading.hour, new_reading.minute, new_reading.second, 0);
@@ -92,4 +92,9 @@ void Pcf8523::init_interrupt_pin(uint interrupt_pin, gpio_irq_callback_t callbac
     gpio_init(interrupt_pin);
     gpio_pull_up(interrupt_pin);
     gpio_set_irq_enabled_with_callback(interrupt_pin, GPIO_IRQ_EDGE_FALL, true, callback);
+}
+
+void Pcf8523::set_i2c_address(uint8_t i2c_address)
+{
+    this->i2c_address = i2c_address;
 }
