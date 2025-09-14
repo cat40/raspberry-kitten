@@ -38,4 +38,6 @@ class Pcf8523
 
 };
 
+int64_t rtc_reading_to_epoch(rtc_reading_t rtc_reading);
+
 #endif

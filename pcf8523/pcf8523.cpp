@@ -98,3 +98,24 @@ void Pcf8523::set_i2c_address(uint8_t i2c_address)
 {
     this->i2c_address = i2c_address;
 }
+
+int64_t rtc_reading_to_epoch(rtc_reading_t rtc_reading)
+{
+    const static uint16_t days_passed_by_month_normal[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+    const static uint16_t days_passed_by_month_leap[] = { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+    int64_t time = 0;
+    time += ((rtc_reading.year-1970)*365 + rtc_reading.year/4)*24*60*60;  // might be off by a few days
+    if (rtc_reading.year % 4 == 0)
+    {
+        time += (days_passed_by_month_leap[rtc_reading.month])*24*60*60; // todo implement days per month
+    }
+    else
+    {
+        time += (days_passed_by_month_normal[rtc_reading.month])*24*60*60; // todo implement days per month
+    }
+    time += rtc_reading.day*24*60*60;
+    time += rtc_reading.hour*60*60;
+    time += rtc_reading.minute*60;
+    time += rtc_reading.second;
+    return time;
+}
