@@ -78,9 +78,10 @@ void Pcf8523::set_time(rtc_reading_t* reading)
     buffer[4] = decimal_to_bcd(reading->day, DAYS_TENS_MASK);
     buffer[5] = reading->weekday;  // todo get weekday from date to put here (set to 4 because I did this on a thursday)
     buffer[6] = decimal_to_bcd(reading->month, MONTHS_TENS_MASK);
-    buffer[7] = decimal_to_bcd(reading->year, YEARS_TENS_MASK);
+    buffer[7] = decimal_to_bcd(reading->year%100, YEARS_TENS_MASK);
     // i2c_write_blocking(i2c, i2c_address, &register_address, 1, true);
     i2c_write_blocking(i2c, i2c_address, buffer, 8, true);
+    century = reading->year/100;
     // rtc_reading_t new_reading;
     // get_reading_pcf8523(&new_reading);
     // printf("New date reading is: ");
